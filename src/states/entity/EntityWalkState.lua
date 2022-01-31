@@ -8,11 +8,13 @@
 
 EntityWalkState = Class{__includes = BaseState}
 
-function EntityWalkState:init(entity, dungeon)
+function EntityWalkState:init(entity, room)
     self.entity = entity
     self.entity:changeAnimation('walk-down')
 
-    self.dungeon = dungeon
+    self.room = room
+
+    self.objects = self.room.objects
 
     -- used for AI control
     self.moveDuration = 0
@@ -34,13 +36,32 @@ function EntityWalkState:update(dt)
         if self.entity.x <= MAP_RENDER_OFFSET_X + TILE_SIZE then 
             self.entity.x = MAP_RENDER_OFFSET_X + TILE_SIZE
             self.bumped = true
+        else
+            for k, object in pairs(self.objects) do
+                -- trigger collision callback on object
+                if object.solid and self.entity:collides(object) then
+                    object:onCollide(self.entity)
+                    self.bumped = true
+                    self.entity.x = object.x + object.width + 1
+                end
+            end
         end
+
     elseif self.entity.direction == 'right' then
         self.entity.x = self.entity.x + self.entity.walkSpeed * dt
 
         if self.entity.x + self.entity.width >= VIRTUAL_WIDTH - TILE_SIZE * 2 then
             self.entity.x = VIRTUAL_WIDTH - TILE_SIZE * 2 - self.entity.width
             self.bumped = true
+        else
+            for k, object in pairs(self.objects) do
+                -- trigger collision callback on object
+                if object.solid and self.entity:collides(object) then
+                    object:onCollide(self.entity)
+                    self.bumped = true
+                    self.entity.x = object.x - self.entity.width - 1
+                end
+            end
         end
     elseif self.entity.direction == 'up' then
         self.entity.y = self.entity.y - self.entity.walkSpeed * dt
@@ -48,6 +69,15 @@ function EntityWalkState:update(dt)
         if self.entity.y <= MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2 then 
             self.entity.y = MAP_RENDER_OFFSET_Y + TILE_SIZE - self.entity.height / 2
             self.bumped = true
+        else
+            for k, object in pairs(self.objects) do
+                -- trigger collision callback on object
+                if object.solid and self.entity:collides(object) then
+                    object:onCollide(self.entity)
+                    self.bumped = true
+                    self.entity.y = self.entity.y + self.entity.walkSpeed * dt --object.y + object.height + 1
+                end
+            end
         end
     elseif self.entity.direction == 'down' then
         self.entity.y = self.entity.y + self.entity.walkSpeed * dt
@@ -58,6 +88,15 @@ function EntityWalkState:update(dt)
         if self.entity.y + self.entity.height >= bottomEdge then
             self.entity.y = bottomEdge - self.entity.height
             self.bumped = true
+        else
+            for k, object in pairs(self.objects) do
+                -- trigger collision callback on object
+                if object.solid and self.entity:collides(object) then
+                    object:onCollide(self.entity)
+                    self.bumped = true
+                    self.entity.y = object.y - self.entity.height - 1
+                end
+            end
         end
     end
 end

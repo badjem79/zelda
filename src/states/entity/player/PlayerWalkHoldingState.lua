@@ -6,9 +6,9 @@
     cogden@cs50.harvard.edu
 ]]
 
-PlayerWalkState = Class{__includes = EntityWalkState}
+PlayerWalkHoldingState = Class{__includes = EntityWalkState}
 
-function PlayerWalkState:init(player, room)
+function PlayerWalkHoldingState:init(player, room)
     self.entity = player
     
     self.room = room
@@ -20,25 +20,21 @@ function PlayerWalkState:init(player, room)
     self.entity.offsetX = 0
 end
 
-function PlayerWalkState:update(dt)
+function PlayerWalkHoldingState:update(dt)
     if love.keyboard.isDown('left') then
         self.entity.direction = 'left'
-        self.entity:changeAnimation('walk-left')
+        self.entity:changeAnimation('walk-holding-left')
     elseif love.keyboard.isDown('right') then
         self.entity.direction = 'right'
-        self.entity:changeAnimation('walk-right')
+        self.entity:changeAnimation('walk-holding-right')
     elseif love.keyboard.isDown('up') then
         self.entity.direction = 'up'
-        self.entity:changeAnimation('walk-up')
+        self.entity:changeAnimation('walk-holding-up')
     elseif love.keyboard.isDown('down') then
         self.entity.direction = 'down'
-        self.entity:changeAnimation('walk-down')
+        self.entity:changeAnimation('walk-holding-down')
     else
-        self.entity:changeState('idle')
-    end
-
-    if love.keyboard.wasPressed('space') then
-        self.entity:changeState('swing-sword')
+        self.entity:changeState('idle-holding')
     end
 
     -- perform base collision detection against walls

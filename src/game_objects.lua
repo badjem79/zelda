@@ -14,6 +14,7 @@ GAME_OBJECT_DEFS = {
         width = 16,
         height = 16,
         solid = false,
+        consumable = false,
         defaultState = 'unpressed',
         states = {
             ['unpressed'] = {
@@ -46,6 +47,21 @@ GAME_OBJECT_DEFS = {
         }
     },
     ['pot'] = {
-        -- TODO
+        type = 'pot',
+        texture = 'pots',
+        frame = 110,
+        width = 16,
+        height = 16,
+        solid = true,
+        consumable = false,
+        defaultState = 'full',
+        states = {
+            ['full'] = {
+                frame = 110
+            },
+            ['empty'] = {
+                frame = 111
+            }
+        }
     }
 }

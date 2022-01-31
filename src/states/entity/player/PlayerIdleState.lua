@@ -24,4 +24,44 @@ function PlayerIdleState:update(dt)
     if love.keyboard.wasPressed('space') then
         self.entity:changeState('swing-sword')
     end
+
+    if love.keyboard.wasPressed('c') or love.keyboard.wasPressed('C') then
+        local near = false
+        if (self.entity.bumpedObject) then
+            print(self.entity.bumpedObject.x .. " " .. self.entity.bumpedObject.y)
+            if (self.entity.direction == 'left') then
+                if (self.entity.x <= self.entity.bumpedObject.x + self.entity.bumpedObject.width + 1) and
+                   (self.entity.x > self.entity.bumpedObject.x) and
+                   (self.entity.y < self.entity.bumpedObject.y + self.entity.bumpedObject.height - self.entity.height/2) and
+                   (self.entity.y >= self.entity.bumpedObject.y - self.entity.height/2) then
+                    near = true
+                end
+            elseif (self.entity.direction == 'right') then
+                if self.entity.x >= self.entity.bumpedObject.x - self.entity.width - 1 and
+                   self.entity.x < self.entity.bumpedObject.x and
+                   (self.entity.y < self.entity.bumpedObject.y + self.entity.bumpedObject.height - self.entity.height/2) and
+                   (self.entity.y > self.entity.bumpedObject.y - self.entity.height/2) then
+                    near = true
+                end
+            elseif (self.entity.direction == 'up') then
+                if self.entity.y <= self.entity.bumpedObject.y + self.entity.bumpedObject.height + 1 and
+                   self.entity.y > self.entity.bumpedObject.y and
+                   self.entity.x > self.entity.bumpedObject.x - self.entity.width/2 and
+                   self.entity.x < self.entity.bumpedObject.x + self.entity.bumpedObject.width - self.entity.width/2 then
+                    near = true
+                end
+            elseif (self.entity.direction == 'down') then
+                if self.entity.y >= self.entity.bumpedObject.y - self.entity.height - 1 and
+                   self.entity.y < self.entity.bumpedObject.y and
+                   self.entity.x > self.entity.bumpedObject.x - self.entity.width/2 and
+                   self.entity.x < self.entity.bumpedObject.x + self.entity.bumpedObject.width - self.entity.width/2 then
+                    near = true
+                end
+            end
+        end
+        if near then
+            -- lift pot and go to lift
+            self.entity:changeState('lift') --idle-holding
+        end
+    end
 end

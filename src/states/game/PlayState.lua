@@ -30,9 +30,14 @@ function PlayState:init()
     self.currentRoom = Room(self.player)
     
     self.player.stateMachine = StateMachine {
-        ['walk'] = function() return PlayerWalkState(self.player, self.dungeon) end,
+        ['walk'] = function() return PlayerWalkState(self.player, self.dungeon.currentRoom) end,
         ['idle'] = function() return PlayerIdleState(self.player) end,
-        ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end
+
+        ['walk-holding'] = function() return PlayerWalkHoldingState(self.player, self.dungeon.currentRoom) end,
+        ['idle-holding'] = function() return PlayerHoldingState(self.player) end,
+        
+        ['swing-sword'] = function() return PlayerSwingSwordState(self.player, self.dungeon) end,
+        ['lift'] = function() return PlayerLiftState(self.player, self.dungeon) end
     }
     self.player:changeState('idle')
 end
