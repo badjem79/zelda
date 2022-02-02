@@ -71,12 +71,12 @@ function GameObject:explode()
 
         self.psystem:emit(64)
         
-        if self.moveTween ~= nil then
-            Timer.after(0.3, function ()
+        Timer.after(0.2, function ()
+            if self.moveTween ~= nil then
                 self.moveTween:remove()
                 self.moveTween = nil;
-            end)
-        end
+            end
+        end)
 
         Timer.after(0.8, function ()
             self.destroyed = true
