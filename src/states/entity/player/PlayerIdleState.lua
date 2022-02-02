@@ -28,7 +28,6 @@ function PlayerIdleState:update(dt)
     if love.keyboard.wasPressed('c') or love.keyboard.wasPressed('C') then
         local near = false
         if (self.entity.bumpedObject) then
-            print(self.entity.bumpedObject.x .. " " .. self.entity.bumpedObject.y)
             if (self.entity.direction == 'left') then
                 if (self.entity.x <= self.entity.bumpedObject.x + self.entity.bumpedObject.width + 1) and
                    (self.entity.x > self.entity.bumpedObject.x) and
@@ -60,6 +59,11 @@ function PlayerIdleState:update(dt)
             end
         end
         if near then
+            -- set bumped as lifted
+            self.entity.liftedObject = self.entity.bumpedObject
+            self.entity.bumpedObject = nil
+            self.entity.liftedObject.solid = false
+            
             -- lift pot and go to lift
             self.entity:changeState('lift') --idle-holding
         end

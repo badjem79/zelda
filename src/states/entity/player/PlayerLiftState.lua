@@ -30,6 +30,8 @@ function PlayerLiftState:init(player, dungeon)
     elseif direction == 'down' then
         self.offsetY = -5
     end
+
+    self.liftedObject = nil
 end
 
 function PlayerLiftState:enter(params)
@@ -39,6 +41,11 @@ function PlayerLiftState:enter(params)
 
     -- restart animation
     self.player.currentAnimation:refresh()
+
+    -- tween
+    Timer.tween(0.5, {
+        [self.player.liftedObject] = {x = self.player.x, y = self.player.y + Y_LIFTED_OBJECT}
+    })
 end
 
 function PlayerLiftState:update(dt)
@@ -55,4 +62,6 @@ function PlayerLiftState:render()
     local anim = self.player.currentAnimation
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.player.x - self.offsetX), math.floor(self.player.y - self.offsetY))
+    -- render the lifted obj again over the player
+    self.player.liftedObject:render(0, 0)
 end

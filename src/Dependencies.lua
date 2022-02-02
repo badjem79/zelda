@@ -41,6 +41,7 @@ require 'src/states/game/StartState'
 gTextures = {
     ['tiles'] = love.graphics.newImage('graphics/tilesheet.png'),
     ['background'] = love.graphics.newImage('graphics/background.png'),
+    ['particle'] = love.graphics.newImage('graphics/particle.png'),
     ['character-walk'] = love.graphics.newImage('graphics/character_walk.png'),
     ['character-swing-sword'] = love.graphics.newImage('graphics/character_swing_sword.png'),
     ['character-pot-lift'] = love.graphics.newImage('graphics/character_pot_lift.png'),
@@ -80,5 +81,6 @@ gSounds = {
     ['hit-player'] = love.audio.newSource('sounds/hit_player.wav', 'static'),
     ['door'] = love.audio.newSource('sounds/door.wav', 'static'),
     ['lift'] = love.audio.newSource('sounds/lift.wav', 'static'),
-    ['throw'] = love.audio.newSource('sounds/throw.wav', 'static')
+    ['throw'] = love.audio.newSource('sounds/throw.wav', 'static'),
+    ['explosion'] = love.audio.newSource('sounds/explosion.wav', 'static')
 }

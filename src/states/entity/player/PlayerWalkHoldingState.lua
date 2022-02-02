@@ -40,76 +40,15 @@ function PlayerWalkHoldingState:update(dt)
     -- perform base collision detection against walls
     EntityWalkState.update(self, dt)
 
-    -- if we bumped something when checking collision, check any object collisions
-    if self.bumped then
-        if self.entity.direction == 'left' then
-            
-            -- temporarily adjust position into the wall, since bumping pushes outward
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-            
-            -- check for colliding into doorway to transition
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
+    -- can't pass thru doors
 
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-left')
-                end
-            end
+    -- move the lifted obj accordingly
+    self.entity.liftedObject.x = self.entity.x
+    self.entity.liftedObject.y = self.entity.y + Y_LIFTED_OBJECT
+end
 
-            -- readjust
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'right' then
-            
-            -- temporarily adjust position
-            self.entity.x = self.entity.x + PLAYER_WALK_SPEED * dt
-            
-            -- check for colliding into doorway to transition
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.y = doorway.y + 4
-                    Event.dispatch('shift-right')
-                end
-            end
-
-            -- readjust
-            self.entity.x = self.entity.x - PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'up' then
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-            
-            -- check for colliding into doorway to transition
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-up')
-                end
-            end
-
-            -- readjust
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-        elseif self.entity.direction == 'down' then
-            
-            -- temporarily adjust position
-            self.entity.y = self.entity.y + PLAYER_WALK_SPEED * dt
-            
-            -- check for colliding into doorway to transition
-            for k, doorway in pairs(self.room.doorways) do
-                if self.entity:collides(doorway) and doorway.open then
-
-                    -- shift entity to center of door to avoid phasing through wall
-                    self.entity.x = doorway.x + 8
-                    Event.dispatch('shift-down')
-                end
-            end
-
-            -- readjust
-            self.entity.y = self.entity.y - PLAYER_WALK_SPEED * dt
-        end
-    end
+function PlayerWalkHoldingState:render()
+    EntityWalkState.render(self)
+    -- render the lifted obj again over the player
+    self.entity.liftedObject:render(0, 0)
 end

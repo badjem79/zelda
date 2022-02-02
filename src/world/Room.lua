@@ -57,9 +57,9 @@ function Room:generateEntities()
 
             -- ensure X and Y are within bounds of the map
             x = math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+                RIGHT_EDGE - 16),
             y = math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16),
+                BOTTOM_EDGE - 16),
             
             width = 16,
             height = 16,
@@ -98,9 +98,9 @@ function Room:generateObjects()
     local switch = GameObject(
         GAME_OBJECT_DEFS['switch'],
         math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            RIGHT_EDGE - 16),
         math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+        BOTTOM_EDGE - 16)
     )
 
     -- define a function for the switch that will open all doors in the room
@@ -125,12 +125,19 @@ function Room:generateObjects()
         local pot = GameObject(
             GAME_OBJECT_DEFS['pot'],
             math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                        VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            RIGHT_EDGE - 16),
             math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                        VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+            BOTTOM_EDGE - 16)
         )
         pot.onCollide = function(obj, entity)
-            entity.bumpedObject = obj
+            if obj.state:sub(-4) == '-fly' then
+                entity:damage(1)
+                if entity.isPlayer ~= true then
+                    obj:explode()
+                end
+            else
+                entity.bumpedObject = obj
+            end
         end
         table.insert(self.objects, pot)
     end
@@ -212,7 +219,7 @@ function Room:update(dt)
         object:update(dt)
 
         -- trigger collision callback on object
-        if self.player:collides(object) then
+        if not object.destroyed and self.player:collides(object) then
             object:onCollide(self.player)
             if object.consumable then
                 table.insert(idxToDelete, k)
@@ -242,7 +249,7 @@ function Room:render()
     end
 
     for k, object in pairs(self.objects) do
-        object:render(self.adjacentOffsetX, self.adjacentOffsetY)
+        if not object.destroyed then object:render(self.adjacentOffsetX, self.adjacentOffsetY) end
     end
 
     for k, entity in pairs(self.entities) do

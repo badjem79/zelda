@@ -9,6 +9,7 @@
 Player = Class{__includes = Entity}
 
 function Player:init(def)
+    self.isPlayer = true
     Entity.init(self, def)
 end
 

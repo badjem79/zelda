@@ -59,6 +59,9 @@ GAME_OBJECT_DEFS = {
             ['full'] = {
                 frame = 110
             },
+            ['full-fly'] = {
+                frame = 110
+            },
             ['empty'] = {
                 frame = 111
             }
